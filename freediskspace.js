@@ -1,4 +1,4 @@
-const myProductName = "Free Disk Space", myVersion = "0.4.0"; 
+const myProductName = "Free Disk Space", myVersion = "0.4.1"; 
 
 const fs = require ("fs");
 const utils = require ("daveutils");
@@ -55,6 +55,11 @@ function getFreeDiskSpace () {
 			});
 		});
 	}
+function everyMinute () {
+	if (new Date ().getMinutes () == 0) {
+		getFreeDiskSpace ();
+		}
+	}
 
 console.log ("\n" + myProductName + " v" + myVersion + ".");
 fs.readFile (fnameConfig, function (err, data) {
@@ -76,7 +81,7 @@ fs.readFile (fnameConfig, function (err, data) {
 				}
 			console.log ("stats == " + utils.jsonStringify (stats));
 			getFreeDiskSpace ()
-			utils.runEveryMinute (getFreeDiskSpace);
+			utils.runEveryMinute (everyMinute);
 			});
 		}
 	});
