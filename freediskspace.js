@@ -1,4 +1,4 @@
-const myProductName = "Free Disk Space", myVersion = "0.4.1"; 
+const myProductName = "Free Disk Space", myVersion = "0.4.2"; 
 
 const fs = require ("fs");
 const utils = require ("daveutils");
@@ -14,7 +14,9 @@ var stats = {
 	ctUsed: undefined,
 	ctAvailable: undefined,
 	whenLastUpdate: undefined,
-	ctUpdates: 0
+	ctUpdates: 0,
+	productName: myProductName,
+	version: myVersion
 	};
 const fnameConfig = "config.json";
 
@@ -43,6 +45,8 @@ function getFreeDiskSpace () {
 		stats.ctUsed = ctUsed;
 		stats.ctAvailable = ctAvailable;
 		stats.whenLastUpdate = new Date ();
+		stats.productName = myProductName;
+		stats.version = myVersion;
 		stats.ctUpdates++;
 		
 		var jsontext = utils.jsonStringify (stats);
@@ -51,12 +55,14 @@ function getFreeDiskSpace () {
 				console.log (myProductName + ": s3path == " + config.s3path + ", err.message == " + err.message);
 				}
 			else {
+				console.log ("\n" + myProductName + " v" + myVersion + ", " + stats.whenLastUpdate.toLocaleTimeString () + ": s3path == " + config.s3path + ", stats == " + jsontext);
 				}
 			});
 		});
 	}
 function everyMinute () {
-	if (new Date ().getMinutes () == 0) {
+	if (utils.secondsSince (stats.whenLastUpdate) >= 3600) { //an hour has passed since last check
+		stats.whenLastUpdate = new Date ();
 		getFreeDiskSpace ();
 		}
 	}
