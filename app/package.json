@@ -1,16 +1,16 @@
-{ 
-	"name": "freediskspace",  
+{
+	"name": "freediskspace",
 	"description": "Find out how much disk space is free, upload to S3.",
 	"author": "Dave Winer <dave@smallpicture.com>",
 	"version": "0.4.4",
 	"main": "freediskspace.js",
-	"dependencies" : {
+	"dependencies": {
 		"daves3": "*",
 		"davediskspace": "*",
 		"daveutils": "*"
-		}, 
+	},
 	"license": "MIT",
-	"engines": { 
+	"engines": {
 		"node": "*"
-		}
 	}
+}
