@@ -1,4 +1,4 @@
-const myProductName = "Free Disk Space", myVersion = "0.4.3"; 
+const myProductName = "Free Disk Space", myVersion = "0.4.4"; 
 
 exports.get = getFreeDiskSpace; 
 

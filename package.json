@@ -2,7 +2,7 @@
 	"name": "davediskspace",  
 	"description": "Find out how much disk space is free.",
 	"author": "Dave Winer <dave@smallpicture.com>",
-	"version": "0.4.3",
+	"version": "0.4.4",
 	"main": "freediskspace.js",
 	"dependencies" : {
 		"node-cmd": "*",
