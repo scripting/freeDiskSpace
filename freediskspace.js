@@ -1,26 +1,14 @@
-const myProductName = "Free Disk Space", myVersion = "0.4.2"; 
+const myProductName = "Free Disk Space", myVersion = "0.4.3"; 
+
+exports.get = getFreeDiskSpace; 
 
 const fs = require ("fs");
 const utils = require ("daveutils");
 const s3 = require ("daves3");
 const cmd = require ("node-cmd"); 
 
-var config = {
-	s3path: undefined, 
-	};
-var stats = {
-	percent: undefined,
-	ctTotal: undefined,
-	ctUsed: undefined,
-	ctAvailable: undefined,
-	whenLastUpdate: undefined,
-	ctUpdates: 0,
-	productName: myProductName,
-	version: myVersion
-	};
-const fnameConfig = "config.json";
-
-function getFreeDiskSpace () {
+function getFreeDiskSpace (stats, callback) {
+	var whenstart = new Date ();
 	cmd.get ("df /", function (err, data, stderr) {
 		var line2 = utils.stringNthField (data, "\n", 2);
 		
@@ -40,54 +28,21 @@ function getFreeDiskSpace () {
 		
 		var percent = ((ctTotal - ctUsed) / ctTotal) * 100;
 		
+		stats.productName = myProductName;
+		stats.version = myVersion;
 		stats.percent = Math.round (percent);
 		stats.ctTotal = ctTotal;
 		stats.ctUsed = ctUsed;
 		stats.ctAvailable = ctAvailable;
+		stats.ctSecs = utils.secondsSince (whenstart);
 		stats.whenLastUpdate = new Date ();
-		stats.productName = myProductName;
-		stats.version = myVersion;
+		if (stats.ctUpdates === undefined) {
+			stats.ctUpdates = 0;
+			}
 		stats.ctUpdates++;
 		
-		var jsontext = utils.jsonStringify (stats);
-		s3.newObject (config.s3path, jsontext, "application/json", "public-read", function (err, data) {
-			if (err) {
-				console.log (myProductName + ": s3path == " + config.s3path + ", err.message == " + err.message);
-				}
-			else {
-				console.log ("\n" + myProductName + " v" + myVersion + ", " + stats.whenLastUpdate.toLocaleTimeString () + ": s3path == " + config.s3path + ", stats == " + jsontext);
-				}
-			});
+		if (callback !== undefined) { //10/11/19 by DW
+			callback ();
+			}
 		});
 	}
-function everyMinute () {
-	if (utils.secondsSince (stats.whenLastUpdate) >= 3600) { //an hour has passed since last check
-		stats.whenLastUpdate = new Date ();
-		getFreeDiskSpace ();
-		}
-	}
-
-console.log ("\n" + myProductName + " v" + myVersion + ".");
-fs.readFile (fnameConfig, function (err, data) {
-	if (err) {
-		console.log (err.message);
-		}
-	else {
-		const jstruct = JSON.parse (data);
-		for (var x in jstruct) {
-			config [x] = jstruct [x];
-			}
-		console.log ("config == " + utils.jsonStringify (config));
-		s3.getObject (config.s3path, function (err, data) {
-			if (!err) {
-				const jstruct = JSON.parse (data.Body);
-				for (var x in jstruct) {
-					stats [x] = jstruct [x];
-					}
-				}
-			console.log ("stats == " + utils.jsonStringify (stats));
-			getFreeDiskSpace ()
-			utils.runEveryMinute (everyMinute);
-			});
-		}
-	});
