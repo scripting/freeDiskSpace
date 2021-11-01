@@ -5,8 +5,8 @@
 	"version": "0.4.4",
 	"main": "freediskspace.js",
 	"dependencies": {
+		"davediskspace": "^0.4.9",
 		"daves3": "*",
-		"davediskspace": "*",
 		"daveutils": "*"
 	},
 	"license": "MIT",

@@ -1,11 +1,16 @@
 { 
-	"name": "davediskspace",  
+	"name": "davediskspace",   
 	"description": "Find out how much disk space is free.",
-	"author": "Dave Winer <dave@smallpicture.com>",
-	"version": "0.4.4",
+	"author": "Dave Winer <dave@scripting.com>",
+	"version": "0.4.9", 
 	"main": "freediskspace.js",
+	"files": [
+		"freediskspace.js",
+		"package.json",
+		"readme.md"
+		],
 	"dependencies" : {
-		"node-cmd": "*",
+		"node-cmd": "3.0.0",
 		"daves3": "*",
 		"daveutils": "*"
 		}, 

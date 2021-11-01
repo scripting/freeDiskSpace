@@ -1,4 +1,4 @@
-const myProductName = "Free Disk Space app", myVersion = "0.4.4"; 
+const myProductName = "Free Disk Space app", myVersion = "0.4.4";  
 
 const s3 = require ("daves3");
 const fs = require ("fs");
